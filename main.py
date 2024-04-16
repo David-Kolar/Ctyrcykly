@@ -47,6 +47,7 @@ def rovinna_metoda(N, hrany):
         kontrola.add((b, a))
     dvojice = set()
     dvojice_ke_zpracovani = [[] for i in range(N)]
+    k_odecteni = 0
     while(zasobnik):
         v = zasobnik.pop()
         if (stupne[v] == 0):
@@ -56,6 +57,15 @@ def rovinna_metoda(N, hrany):
         for s in graf[v]:
             if (stupne[s]>0):
                 sousede.append(s)
+        for k in dvojice_ke_zpracovani[v]:
+            pocitadlo = 0
+            for s in sousede:
+                if ((s, k) in kontrola) and ((s, v) in kontrola):
+                    x = (min(v, k), max(v, k), s)
+                    if (x not in dvojice):
+                        dvojice.add(x)
+                        pocitadlo += 1
+            k_odecteni += pocitadlo*(pocitadlo-1)/2
         for i in range(len(sousede)):
             a = sousede[i]
             for j in range(i+1, len(sousede)):
@@ -64,10 +74,7 @@ def rovinna_metoda(N, hrany):
                 dvojice_ke_zpracovani[a].append(b)
                 dvojice_ke_zpracovani[b].append(a)
 
-        for k in dvojice_ke_zpracovani[v]:
-            for s in sousede:
-                if ((s, k) in kontrola) and ((s, v) in kontrola):
-                    dvojice.add((min(v, k), max(v, k), s))
+
         for s in sousede:
             stupne[s] -= 1
             if (stupne[s] <= 6):
@@ -82,7 +89,7 @@ def rovinna_metoda(N, hrany):
     print(counter)
     for val in counter.values():
         vysledek += val*(val-1)/2
-    return vysledek
+    return vysledek - k_odecteni
 
 
 
